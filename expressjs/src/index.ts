@@ -21,7 +21,8 @@ import process from 'process'
 boot()
 
 // Set backend port number
-const port = process.env.BACKEND_PORT || 80
+const port = process.env.BACKEND_PORT || 8079
+const captivePortalPort = process.env.CAPTIVE_PORTAL_PORT || 80
 
 // Speed limit API requests to prevent abuse of the API.
 const speedLimiter = slowDown({
@@ -31,6 +32,7 @@ const speedLimiter = slowDown({
 })
 
 // Initiate ExpressJS
+const captivePortalApp = express()
 const app = express()
 
 /** 
@@ -43,21 +45,28 @@ ExpressJS setup. Order of these functions is important.
 app.locals.defaultCacheTimeout = 0
 // Allow CORS
 app.use(cors())
+captivePortalApp.use(cors())
 // Import JSON functionality
+captivePortalApp.use(express.json())
+captivePortalApp.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
 // Add a low compression, considerate of low resource devices. Level 1 can reduce
 // some asset sizes by 50%. Gains from 2 and up are marginal but require more hardware
 // resources to achieve.
 app.use(compression({ level: 1 })) //
 // Enable sharing of static files
 app.use(express.static('public'))
+captivePortalApp.use(express.static('public'))
 
 // ==========================================================
 
 // Import routes
-app.use(BalenaSDK)
+captivePortalApp.use(CaptivePortal)
+captivePortalApp.use(BalenaSDK)
 app.use(CaptivePortal)
+app.use(BalenaSDK)
 // app.use(Examples)
 app.use(FileManager)
 app.use(Supervisor)
@@ -73,6 +82,9 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(speedLimiter)
 
 // Start and listen for requests
+captivePortalApp.listen(captivePortalPort, () => {
+  console.log(`ExpressJS Captive-portal: listening on port ${captivePortalPort}`)
+})
 app.listen(port, () => {
   console.log(`ExpressJS: listening on port ${port}`)
 })
