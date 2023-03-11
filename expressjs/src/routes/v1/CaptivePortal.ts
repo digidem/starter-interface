@@ -3,7 +3,7 @@
 //
 
 import Logger from '@/common/logger'
-import express from 'express'
+import express, { Request } from 'express'
 import process from 'process'
 
 // Get the ExpressJS main router process
@@ -13,22 +13,26 @@ const router = express.Router()
 // a response. By intercepting the request to that path, we can make a captive portal appear.
 // This list constitutes the routes we are aware of.
 
-const getPortalUrl = (req: any) => {
+const getPortalUrl = (req: Request) => {
   const host = req.get('Host')
-  const protocol = req.protocol
+  const { protocol } = req
   const port = process.env.PORTAL_PORT
   const url = process.env.PORTAL_URL
   if ((port || url)) {
-    if (host && port && typeof (port) === 'number') return `${protocol}://${host}:${port}`
-    else return url
+    if (host && protocol && port && typeof (port) === 'number') {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      const portalUrl = `${protocol}://${host}:${port}`
+      return portalUrl || null
+    }
+    return url
   }
-  else return '/#/captiveportal'
+  return '/#/captiveportal'
 }
 
 // Android
 router.get('/connectivitycheck.gstatic.com', (req, res) => {
   console.log(req)
-  const portalUrl = getPortalUrl(req) || '/#/captiveportal'
+  const portalUrl: string = getPortalUrl(req) || '/#/captiveportal'
   Logger.info('Redirecting to captive portal.')
   res.redirect(302, portalUrl)
 })
