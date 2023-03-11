@@ -18,15 +18,17 @@ const getPortalUrl = (req: Request) => {
   const { protocol } = req
   const port = process.env.PORTAL_PORT
   const url = process.env.PORTAL_URL
+  let finalUrl = '/#/captiveportal'
   if ((port || url)) {
-    if (host && protocol && port && typeof (port) === 'number') {
+    if (host && protocol && port && typeof (parseInt(port, 10)) === 'number') {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      const portalUrl = `${protocol}://${host}:${port}`
-      return portalUrl || null
+      finalUrl = `${protocol}://${host}:${port}`
+    } else {
+      finalUrl = url || 'localhost'
     }
-    return url
   }
-  return '/#/captiveportal'
+  console.log('Captive-portal url:', finalUrl)
+  return finalUrl
 }
 
 // Android
