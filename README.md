@@ -27,6 +27,12 @@ _Electron App:_
 
 <img width="500" alt="electron" src="https://user-images.githubusercontent.com/64841595/213165616-73bc762b-0073-4407-a10d-52c8daa21333.png"/>
 
+
+# Fork modification
+- Captive-portal as application that redirects to a set url or port
+- Balena starter interface runs on a separate express app on port 8079
+- Design tweaks for better responsiveness
+
 # Documentation
 
 Configuration instructions and use of the UI can be found in the [documentation](https://balena-labs-research.github.io/starter-interface).
