@@ -47,8 +47,6 @@ app.locals.defaultCacheTimeout = 0
 app.use(cors())
 captivePortalApp.use(cors())
 // Import JSON functionality
-captivePortalApp.use(express.json())
-captivePortalApp.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -58,13 +56,10 @@ app.use(express.urlencoded({ extended: true }))
 app.use(compression({ level: 1 })) //
 // Enable sharing of static files
 app.use(express.static('public'))
-captivePortalApp.use(express.static('public'))
-
 // ==========================================================
 
 // Import routes
 captivePortalApp.use(CaptivePortal)
-captivePortalApp.use(BalenaSDK)
 app.use(CaptivePortal)
 app.use(BalenaSDK)
 // app.use(Examples)

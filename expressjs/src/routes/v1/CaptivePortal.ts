@@ -19,9 +19,9 @@ const getPortalUrl = (req: Request) => {
   const port = process.env.PORTAL_PORT
   const url = process.env.PORTAL_URL
   let finalUrl = '/#/captiveportal'
-  if ((port || url)) {
-    if (host && protocol && port && typeof (parseInt(port, 10)) === 'number') {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  if (port || url) {
+    console.log(host, protocol, port)
+    if (host && protocol && port) {
       finalUrl = `${protocol}://${host}:${port}`
     } else {
       finalUrl = url || 'localhost'
@@ -31,9 +31,15 @@ const getPortalUrl = (req: Request) => {
   return finalUrl
 }
 
+// Redirect to captive-portal
+router.get('/', (req, res) => {
+  const portalUrl: string = getPortalUrl(req) || '/#/captiveportal'
+  Logger.info('Redirecting to captive portal.')
+  res.redirect(302, portalUrl)
+})
+
 // Android
 router.get('/connectivitycheck.gstatic.com', (req, res) => {
-  console.log(req)
   const portalUrl: string = getPortalUrl(req) || '/#/captiveportal'
   Logger.info('Redirecting to captive portal.')
   res.redirect(302, portalUrl)
