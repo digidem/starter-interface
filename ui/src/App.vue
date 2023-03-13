@@ -5,6 +5,9 @@
   <div v-else-if="currentURL.hash == '#/captiveportal'">
     <captive-portal />
   </div>
+  <div v-else-if="currentURL.hash == '#/connect'">
+    <connect-wifi />
+  </div>
   <div v-else-if="quasarMode == 'pwa'">
     <pwa-layout />
   </div>
@@ -20,6 +23,9 @@ export default defineComponent({
   components: {
     CaptivePortal: defineAsyncComponent(
       () => import('layouts/CaptivePortal.vue')
+    ),
+    ConnectWifi: defineAsyncComponent(
+      () => import('layouts/ConnectWifi.vue')
     ),
     ElectronLayout: defineAsyncComponent(
       () => import('layouts/ElectronLayout.vue')
