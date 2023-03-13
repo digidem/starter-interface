@@ -90,11 +90,11 @@
             filled
             hide-bottom-space
             :rules="[(val: string) =>
-            val.length > 7
+            (val.length === 0 || val.length > 7)
             || $t('components.wifi.connect.invalid_password_length')]"
             :label="$t('general.password')"
             type="password"
-            :disable="isWifiStatus"
+            :disable="isWifiStatus || scope.opt.conn_type === 'NONE' "
           />
         </div>
         <div class="q-mt-md text-center">
@@ -197,15 +197,16 @@ export default defineComponent({
 
     async function connect() {
       isSubmitting.value = true
+      const params = {
+        ssid: wifiConnection?.value?.ssid,
+        conn_type: wifiConnection?.value?.conn_type,
+        password: wifiConnection?.value?.conn_type !== 'NONE' ? password.value : null
+      }
       try {
         await expressApi.post('/v1/wifi', {
           type: 'POST',
           path: 'v1/connect',
-          params: {
-            ssid: wifiConnection?.value?.ssid,
-            conn_type: wifiConnection?.value?.conn_type,
-            password: password.value
-          }
+          params
         })
 
         isWifiStatus.value = true
