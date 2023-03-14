@@ -31,7 +31,9 @@ _Electron App:_
 # Fork modification
 - Captive-portal as application that redirects to a set url or port
 - Balena starter interface runs on a separate express app on port 8079
+- A seperate page for connecting to WiFi
 - Design tweaks for better responsiveness
+- Connect to password-less network
 
 # Documentation
 
